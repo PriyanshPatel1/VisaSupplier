@@ -1,0 +1,94 @@
+{
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ ما",
+    "retry": "حاول مجدداً",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "submit": "إرسال",
+    "back": "رجوع",
+    "next": "التالي",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "بحث",
+    "filter": "تصفية",
+    "noResults": "لا توجد نتائج"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "إنشاء حساب",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "email": "عنوان البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "name": "الاسم الكامل",
+    "rememberMe": "تذكرني لمدة 30 يوماً",
+    "noAccount": "ليس لديك حساب؟",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "verifyEmail": "تحقق من بريدك الإلكتروني",
+    "verifyEmailDesc": "أرسلنا رابط التحقق إلى {email}",
+    "errors": {
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+      "emailNotVerified": "يرجى التحقق من بريدك الإلكتروني قبل تسجيل الدخول",
+      "accountDeactivated": "تم تعطيل حسابك",
+      "emailExists": "يوجد حساب بهذا البريد الإلكتروني بالفعل",
+      "passwordTooShort": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+      "rateLimited": "محاولات كثيرة جداً. يرجى المحاولة مجدداً بعد 15 دقيقة"
+    }
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "countries": "الدول",
+    "visas": "التأشيرات",
+    "apply": "تقدم الآن",
+    "dashboard": "لوحة التحكم",
+    "applications": "الطلبات",
+    "documents": "الوثائق",
+    "billing": "الفواتير",
+    "notifications": "الإشعارات",
+    "support": "الدعم",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "application": {
+    "status": {
+      "draft": "مسودة",
+      "submitted": "مُقدَّم",
+      "processing": "قيد المعالجة",
+      "approved": "مقبول",
+      "rejected": "مرفوض",
+      "cancelled": "ملغى"
+    },
+    "create": "طلب جديد",
+    "referenceNumber": "الرقم المرجعي",
+    "submittedAt": "تاريخ التقديم",
+    "estimatedDecision": "القرار المتوقع",
+    "noApplications": "لا توجد طلبات بعد",
+    "startApplication": "ابدأ طلب تأشيرتك الأول"
+  },
+  "payment": {
+    "pay": "ادفع الآن",
+    "amount": "المبلغ",
+    "currency": "العملة",
+    "status": {
+      "pending": "معلق",
+      "completed": "مكتمل",
+      "failed": "فاشل",
+      "refunded": "مُسترد"
+    },
+    "success": "تم الدفع بنجاح!",
+    "failed": "فشل الدفع. يرجى المحاولة مجدداً.",
+    "processing": "جارٍ معالجة الدفع..."
+  },
+  "errors": {
+    "notFound": "الصفحة غير موجودة",
+    "unauthorized": "غير مصرح لك بعرض هذه الصفحة",
+    "serverError": "خطأ في الخادم. يرجى المحاولة لاحقاً.",
+    "networkError": "خطأ في الشبكة. تحقق من اتصالك."
+  }
+}

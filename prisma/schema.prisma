@@ -1,0 +1,568 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  SUPPLIER
+  ADMIN
+}
+
+/// draft      → saved, not submitted yet
+/// submitted  → user submitted, awaiting supplier
+/// processing → supplier acknowledged
+/// approved   → visa approved
+/// rejected   → visa denied
+/// cancelled  → cancelled before decision
+enum AppStatus {
+  draft
+  submitted
+  processing
+  approved
+  rejected
+  cancelled
+}
+
+enum DocumentStatus {
+  pending
+  verified
+  rejected
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  resolved
+  closed
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum NotificationType {
+  info
+  success
+  warning
+  error
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+  partially_refunded
+}
+
+enum PaymentMethod {
+  card
+  bank_transfer
+  wallet
+  crypto
+  other
+}
+
+enum VisaCategory {
+  tourist
+  business
+  student
+  work
+  transit
+  medical
+  family
+  other
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  PASSWORD_RESET
+  STATUS_CHANGE
+  DOCUMENT_UPLOAD
+  DOCUMENT_VERIFY
+  PAYMENT_INITIATED
+  PAYMENT_REFUNDED
+}
+
+// =============================================================================
+// USER  (covers USER + ADMIN roles — admin is role = ADMIN in this table)
+// =============================================================================
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(USER)
+  avatar        String?
+  phone         String?
+  country       String?
+  nationality   String?
+  dob           DateTime?
+  gender        String?
+  address       String?
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  applications        Application[]
+  notifications       Notification[]
+  documents           Document[]
+  passwordResetTokens      PasswordResetToken[]
+  emailVerificationTokens  EmailVerificationToken[]
+  supportTickets      SupportTicket[]
+
+  @@index([role])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// SUPPLIER  (separate auth entity — not a User)
+// =============================================================================
+
+model Supplier {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String    @unique
+  passwordHash    String
+  type            String    @default("agency")  // agency | individual | embassy
+  phone           String?
+  address         String?
+  logo            String?                        // Cloudinary URL
+  description     String?
+  website         String?
+  priceMultiplier Float     @default(1.0)
+  rating          Float     @default(0.0)
+  ratingCount     Int       @default(0)
+  isActive        Boolean   @default(true)
+  isVerified      Boolean   @default(false)
+  lastLoginAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  applications  Application[]
+  notifications SupplierNotification[]
+
+  @@index([isActive])
+  @@index([isVerified])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// COUNTRY  (was JSON blob in AdminConfig — proper collection now)
+// =============================================================================
+
+model Country {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique  // ISO-2 e.g. "US" — used as FK in Visa
+  name        String
+  flag        String            // emoji or Cloudinary URL
+  description String   @default("")
+  continent   String   @default("")
+  isActive    Boolean  @default(true)
+  isCustom    Boolean  @default(false) // false=seeded, true=admin-created
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  visas Visa[]
+
+  @@index([isActive])
+  @@index([continent])
+}
+
+// =============================================================================
+// VISA  (was JSON blob in AdminConfig — proper collection now)
+// =============================================================================
+
+model Visa {
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
+  // Slug string e.g. "us-tourist" — NOT a Mongo ObjectId. Unique.
+  visaSlug          String       @unique
+  countryCode       String
+  name              String
+  category          VisaCategory @default(tourist)
+  processingTime    String       @default("2-4 weeks")
+  validity          String       @default("Single entry")
+  stayDuration      String       @default("30 days")
+  fee               Float        @default(0)
+  documentsRequired String[]     @default([])
+  formSchemaId      String       // → VisaFormConfig.schemaId
+  description       String       @default("")
+  isActive          Boolean      @default(true)
+  isCustom          Boolean      @default(false)
+  sortOrder         Int          @default(0)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  country    Country         @relation(fields: [countryCode], references: [code])
+  formSchema VisaFormConfig? @relation(fields: [formSchemaId], references: [schemaId])
+
+  @@index([countryCode])
+  @@index([category])
+  @@index([isActive])
+}
+
+// =============================================================================
+// VISA FORM CONFIG  (was JSON blob in AdminConfig)
+// =============================================================================
+
+model VisaFormConfig {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  schemaId  String   @unique  // matches Visa.formSchemaId e.g. "us-tourist"
+  formLabel String
+  sections  Json             // WizardSection[] — validated at app layer
+  isDefault Boolean  @default(true)  // false = admin-overridden
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  visas Visa[]
+}
+
+// =============================================================================
+// APPLICATION
+// =============================================================================
+
+model Application {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Visa snapshot — denormalised for historical accuracy
+  visaSlug    String            // slug e.g. "us-tourist", NOT ObjectId
+  visaName    String
+  countryCode String
+  countryName String
+
+  // Financials
+  basePrice   Float     @default(0)   // visa fee at submission time
+  serviceFee  Float     @default(0)   // supplier markup
+  totalPaid   Float                   // basePrice + serviceFee
+  currency    String    @default("USD")
+
+  // Status & tracking
+  status            AppStatus @default(draft)
+  referenceNumber   String?
+  estimatedDecision DateTime?
+  submittedAt       DateTime?         // null while status = draft
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Supplier workspace
+  supplierNotes     String?
+  supplierStatus    String?   // internal processing stage label
+  supplierUpdatedAt DateTime?
+
+  // Form data — shape varies per visa type
+  personal Json @default("{}")
+  passport Json @default("{}")
+  travel   Json @default("{}")
+  other    Json @default("{}")
+
+  userId     String   @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id])
+
+  supplierId String   @db.ObjectId
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  documents  ApplicationDocument[]
+  payments   Payment[]
+  statusLogs ApplicationStatusLog[]
+
+  @@index([userId])
+  @@index([supplierId])
+  @@index([status])
+  @@index([countryCode])
+  @@index([visaSlug])
+  @@index([submittedAt])
+  @@index([referenceNumber])
+  @@index([supplierId, status])  // supplier dashboard filter
+  @@index([userId, status])     // user application list filter
+  @@index([updatedAt])          // sort by recent activity
+}
+
+// =============================================================================
+// APPLICATION STATUS LOG  (immutable trail of every status transition)
+// =============================================================================
+
+model ApplicationStatusLog {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String     @db.ObjectId
+  fromStatus    AppStatus?
+  toStatus      AppStatus
+  changedById   String?    @db.ObjectId  // User._id or Supplier._id
+  changedByRole Role?
+  note          String?
+  createdAt     DateTime   @default(now())
+
+  application Application? @relation(fields: [applicationId], references: [id])
+
+  @@index([applicationId])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// PAYMENT  (proper model — not just Application.totalPaid)
+// =============================================================================
+
+model Payment {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String?       @db.ObjectId
+  amount        Float
+  currency      String        @default("USD")
+  status        PaymentStatus @default(pending)
+  method        PaymentMethod @default(card)
+  gatewayRef    String?       @unique // Stripe / Razorpay payment intent id — unique for idempotency
+  gatewayMeta   Json?         // raw gateway response payload
+  invoiceNumber String?       @unique
+  receiptUrl    String?
+  paidAt        DateTime?
+  refundedAt    DateTime?
+  refundReason  String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  application Application? @relation(fields: [applicationId], references: [id])
+
+  @@index([applicationId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// DOCUMENT  (proper model — not embedded Json in Application)
+// =============================================================================
+
+model Document {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String         @db.ObjectId
+  name            String
+  type            String         // passport | photo | bank_statement | etc.
+  mimeType        String         @default("application/octet-stream")
+  sizeBytes       Int
+  fileUrl         String         // Cloudinary / S3 public URL
+  publicId        String?        // Cloudinary public_id — needed to delete
+  status          DocumentStatus @default(pending)
+  rejectionReason String?
+  verifiedAt      DateTime?
+  verifiedById    String?        @db.ObjectId  // admin User._id
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user             User                  @relation(fields: [userId], references: [id])
+  applicationLinks ApplicationDocument[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+}
+
+// =============================================================================
+// APPLICATION ↔ DOCUMENT  (many-to-many join)
+// =============================================================================
+
+model ApplicationDocument {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String   @db.ObjectId
+  documentId    String   @db.ObjectId
+  label         String   @default("")  // e.g. "Passport Copy"
+  createdAt     DateTime @default(now())
+
+  application Application? @relation(fields: [applicationId], references: [id])
+  document    Document    @relation(fields: [documentId], references: [id])
+
+  @@unique([applicationId, documentId])
+  @@index([applicationId])
+  @@index([documentId])
+}
+
+// =============================================================================
+// NOTIFICATION  (for User — including ADMIN-role users)
+// =============================================================================
+
+model Notification {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String           @db.ObjectId
+  title     String
+  message   String
+  type      NotificationType @default(info)
+  read      Boolean          @default(false)
+  readAt    DateTime?
+  actionUrl String?
+  meta      Json?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+  @@index([userId, read])  // unread count per user
+}
+
+// =============================================================================
+// SUPPLIER NOTIFICATION  (separate — Supplier is NOT a User)
+// =============================================================================
+
+model SupplierNotification {
+  id         String           @id @default(auto()) @map("_id") @db.ObjectId
+  supplierId String           @db.ObjectId
+  title      String
+  message    String
+  type       NotificationType @default(info)
+  read       Boolean          @default(false)
+  readAt     DateTime?
+  actionUrl  String?
+  meta       Json?
+  createdAt  DateTime         @default(now())
+
+  supplier Supplier @relation(fields: [supplierId], references: [id])
+
+  @@index([supplierId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// PASSWORD RESET TOKEN  (was hacked into AdminConfig)
+// =============================================================================
+
+model PasswordResetToken {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  token     String    @unique  // SHA-256 hash of the raw token sent to user
+  expiresAt DateTime
+  usedAt    DateTime?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// =============================================================================
+// SUPPORT TICKET
+// =============================================================================
+
+model SupportTicket {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String?        @db.ObjectId  // null = anonymous / pre-auth
+  userName   String
+  email      String
+  subject    String
+  message    String
+  status     TicketStatus   @default(open)
+  priority   TicketPriority @default(medium)
+  assignedTo String?        @db.ObjectId  // admin User._id
+  tags       String[]       @default([])
+  resolvedAt DateTime?
+  closedAt   DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  user    User?         @relation(fields: [userId], references: [id])
+  replies TicketReply[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([userId])
+  @@index([email])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// TICKET REPLY  (full thread — replaces single reply String? field)
+// =============================================================================
+
+model TicketReply {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  ticketId   String   @db.ObjectId
+  authorId   String?  @db.ObjectId  // User._id or Supplier._id; null = system
+  authorRole Role?
+  message    String
+  isInternal Boolean  @default(false)  // true = admin note, hidden from user
+  createdAt  DateTime @default(now())
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id])
+
+  @@index([ticketId])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// ADMIN CONFIG  (generic site settings ONLY — not for domain data anymore)
+// =============================================================================
+
+model AdminConfig {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =============================================================================
+// AUDIT LOG  (append-only — every sensitive admin / supplier action)
+// NOTE: actorUserId XOR actorSupplierId — exactly one will be set per row.
+//       Two separate fields because Supplier is not a User (no shared table).
+// =============================================================================
+
+model AuditLog {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  action          AuditAction
+  entityType      String      // "Application"|"User"|"Visa"|"Supplier"|...
+  entityId        String?
+  description     String?
+  before          Json?       // snapshot before change
+  after           Json?       // snapshot after change
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime    @default(now())
+
+  // Actor — one of these is set, never both
+  actorUserId     String?     @db.ObjectId  // User (USER or ADMIN role)
+  actorSupplierId String?     @db.ObjectId  // Supplier
+  actorRole       Role?
+
+  @@index([actorUserId])
+  @@index([actorSupplierId])
+  @@index([action])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+}
+
+// =============================================================================
+// EMAIL VERIFICATION TOKEN
+// Used for the email verification flow on user registration.
+// =============================================================================
+model EmailVerificationToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  token     String   @unique  // SHA-256 hash of the raw token
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}

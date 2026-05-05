@@ -1,0 +1,94 @@
+{
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "कुछ गलत हो गया",
+    "retry": "पुनः प्रयास करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "submit": "जमा करें",
+    "back": "वापस",
+    "next": "आगे",
+    "close": "बंद करें",
+    "confirm": "पुष्टि करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "view": "देखें",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "noResults": "कोई परिणाम नहीं मिला"
+  },
+  "auth": {
+    "login": "साइन इन करें",
+    "logout": "साइन आउट",
+    "register": "खाता बनाएं",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "resetPassword": "पासवर्ड रीसेट करें",
+    "email": "ईमेल पता",
+    "password": "पासवर्ड",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "name": "पूरा नाम",
+    "rememberMe": "30 दिनों के लिए याद रखें",
+    "noAccount": "खाता नहीं है?",
+    "haveAccount": "पहले से खाता है?",
+    "verifyEmail": "अपना ईमेल सत्यापित करें",
+    "verifyEmailDesc": "{email} पर सत्यापन लिंक भेजा गया",
+    "errors": {
+      "invalidCredentials": "अमान्य ईमेल या पासवर्ड",
+      "emailNotVerified": "लॉग इन करने से पहले अपना ईमेल सत्यापित करें",
+      "accountDeactivated": "आपका खाता निष्क्रिय कर दिया गया है",
+      "emailExists": "इस ईमेल से पहले से खाता मौजूद है",
+      "passwordTooShort": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए",
+      "rateLimited": "बहुत अधिक प्रयास। 15 मिनट बाद पुनः प्रयास करें"
+    }
+  },
+  "nav": {
+    "home": "होम",
+    "countries": "देश",
+    "visas": "वीज़ा",
+    "apply": "अभी आवेदन करें",
+    "dashboard": "डैशबोर्ड",
+    "applications": "आवेदन",
+    "documents": "दस्तावेज़",
+    "billing": "बिलिंग",
+    "notifications": "सूचनाएं",
+    "support": "सहायता",
+    "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग"
+  },
+  "application": {
+    "status": {
+      "draft": "मसौदा",
+      "submitted": "जमा किया गया",
+      "processing": "प्रक्रियाधीन",
+      "approved": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "cancelled": "रद्द"
+    },
+    "create": "नया आवेदन",
+    "referenceNumber": "संदर्भ संख्या",
+    "submittedAt": "जमा किया",
+    "estimatedDecision": "अनुमानित निर्णय",
+    "noApplications": "अभी तक कोई आवेदन नहीं",
+    "startApplication": "अपना पहला वीज़ा आवेदन शुरू करें"
+  },
+  "payment": {
+    "pay": "अभी भुगतान करें",
+    "amount": "राशि",
+    "currency": "मुद्रा",
+    "status": {
+      "pending": "लंबित",
+      "completed": "पूर्ण",
+      "failed": "विफल",
+      "refunded": "वापस किया गया"
+    },
+    "success": "भुगतान सफल!",
+    "failed": "भुगतान विफल। पुनः प्रयास करें।",
+    "processing": "भुगतान प्रक्रियाधीन..."
+  },
+  "errors": {
+    "notFound": "पृष्ठ नहीं मिला",
+    "unauthorized": "आप इस पृष्ठ को देखने के अधिकृत नहीं हैं",
+    "serverError": "सर्वर त्रुटि। बाद में पुनः प्रयास करें।",
+    "networkError": "नेटवर्क त्रुटि। अपना कनेक्शन जांचें।"
+  }
+}

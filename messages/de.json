@@ -1,0 +1,94 @@
+{
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "submit": "Absenden",
+    "back": "Zurück",
+    "next": "Weiter",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Ansehen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "noResults": "Keine Ergebnisse gefunden"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "register": "Konto erstellen",
+    "forgotPassword": "Passwort vergessen?",
+    "resetPassword": "Passwort zurücksetzen",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "name": "Vollständiger Name",
+    "rememberMe": "30 Tage angemeldet bleiben",
+    "noAccount": "Kein Konto vorhanden?",
+    "haveAccount": "Bereits ein Konto?",
+    "verifyEmail": "E-Mail-Adresse bestätigen",
+    "verifyEmailDesc": "Wir haben einen Bestätigungslink an {email} gesendet",
+    "errors": {
+      "invalidCredentials": "Ungültige E-Mail oder Passwort",
+      "emailNotVerified": "Bitte bestätigen Sie Ihre E-Mail vor der Anmeldung",
+      "accountDeactivated": "Ihr Konto wurde deaktiviert",
+      "emailExists": "Ein Konto mit dieser E-Mail existiert bereits",
+      "passwordTooShort": "Das Passwort muss mindestens 8 Zeichen lang sein",
+      "rateLimited": "Zu viele Versuche. Bitte in 15 Minuten erneut versuchen"
+    }
+  },
+  "nav": {
+    "home": "Startseite",
+    "countries": "Länder",
+    "visas": "Visa",
+    "apply": "Jetzt beantragen",
+    "dashboard": "Dashboard",
+    "applications": "Anträge",
+    "documents": "Dokumente",
+    "billing": "Abrechnung",
+    "notifications": "Benachrichtigungen",
+    "support": "Support",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
+  "application": {
+    "status": {
+      "draft": "Entwurf",
+      "submitted": "Eingereicht",
+      "processing": "In Bearbeitung",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt",
+      "cancelled": "Storniert"
+    },
+    "create": "Neuer Antrag",
+    "referenceNumber": "Referenznummer",
+    "submittedAt": "Eingereicht am",
+    "estimatedDecision": "Voraussichtliche Entscheidung",
+    "noApplications": "Noch keine Anträge",
+    "startApplication": "Starten Sie Ihren ersten Visumantrag"
+  },
+  "payment": {
+    "pay": "Jetzt bezahlen",
+    "amount": "Betrag",
+    "currency": "Währung",
+    "status": {
+      "pending": "Ausstehend",
+      "completed": "Abgeschlossen",
+      "failed": "Fehlgeschlagen",
+      "refunded": "Erstattet"
+    },
+    "success": "Zahlung erfolgreich!",
+    "failed": "Zahlung fehlgeschlagen. Bitte erneut versuchen.",
+    "processing": "Zahlung wird verarbeitet..."
+  },
+  "errors": {
+    "notFound": "Seite nicht gefunden",
+    "unauthorized": "Sie sind nicht berechtigt, diese Seite anzuzeigen",
+    "serverError": "Serverfehler. Bitte später erneut versuchen.",
+    "networkError": "Netzwerkfehler. Bitte Verbindung prüfen."
+  }
+}

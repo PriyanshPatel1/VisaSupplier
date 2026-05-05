@@ -1,0 +1,192 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# VisaHub — Production .gitignore
+# Stack: Next.js · Prisma · BullMQ/Redis · Cloudinary · Razorpay · Resend · Sentry
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+# ── Environment & Secrets ────────────────────────────────────────────────────
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.staging
+.env.production
+.env.production.local
+.env*.local
+
+# Never commit these even if accidentally created
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+secrets/
+config/secrets/
+
+
+# ── Next.js ──────────────────────────────────────────────────────────────────
+.next/
+out/
+build/
+.next-internal/
+
+# Next.js cache
+.next/cache/
+
+# Vercel deployment output
+.vercel/
+.vercel
+
+# Static export
+/out
+
+
+# ── Node.js ──────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.yarn/
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+
+# ── TypeScript ───────────────────────────────────────────────────────────────
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+dist/
+.tsbuild/
+
+
+# ── Prisma ───────────────────────────────────────────────────────────────────
+# Keep schema.prisma and migrations — ignore generated client & local db files
+prisma/generated/
+generated/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Prisma migration lock is safe to commit; ignore local dev shadow db output
+prisma/.env
+
+
+# ── Pino / Logging ───────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+pino-*.log
+combined.log
+error.log
+access.log
+
+
+# ── BullMQ / Redis ───────────────────────────────────────────────────────────
+# Redis dump file if running locally
+dump.rdb
+*.rdb
+appendonly.aof
+
+
+# ── Cloudinary ───────────────────────────────────────────────────────────────
+# Local upload staging directories
+uploads/
+tmp/uploads/
+.cloudinary/
+
+
+# ── Sentry ───────────────────────────────────────────────────────────────────
+.sentryclirc
+# Sentry source maps (uploaded during build, not needed in repo)
+*.js.map
+*.map
+
+
+# ── Testing ──────────────────────────────────────────────────────────────────
+# Jest
+coverage/
+.jest-cache/
+junit.xml
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/e2e/screenshots/
+/e2e/videos/
+blob-report/
+
+
+# ── Editor & OS ──────────────────────────────────────────────────────────────
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V8
+.Trashes
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+
+# ── Misc build & tooling ─────────────────────────────────────────────────────
+.cache/
+.parcel-cache/
+.turbo/
+.swc/
+.eslintcache
+.stylelintcache
+storybook-static/
+.chromatic/
+
+# Dependency lock files — keep package-lock.json but ignore others if using npm
+yarn.lock
+pnpm-lock.yaml
+# Uncomment below if you switch to yarn or pnpm:
+# package-lock.json
+
+
+# ── Scripts output ───────────────────────────────────────────────────────────
+scripts/output/
+scripts/*.output
+scripts/tmp/
+
+
+# ── Public uploads (user content — stored in Cloudinary, not git) ───────────
+public/uploads/
+public/tmp/
+
+# Keep public/fonts, public/icons, public/images (static assets)
+!public/fonts/
+!public/icons/
+!public/images/

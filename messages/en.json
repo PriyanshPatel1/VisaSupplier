@@ -1,0 +1,94 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "noResults": "No results found"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "register": "Create Account",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Full Name",
+    "rememberMe": "Remember me for 30 days",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "verifyEmail": "Verify your email",
+    "verifyEmailDesc": "We sent a verification link to {email}",
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailNotVerified": "Please verify your email before logging in",
+      "accountDeactivated": "Your account has been deactivated",
+      "emailExists": "An account with this email already exists",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "rateLimited": "Too many attempts. Please try again in 15 minutes"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "countries": "Countries",
+    "visas": "Visas",
+    "apply": "Apply Now",
+    "dashboard": "Dashboard",
+    "applications": "Applications",
+    "documents": "Documents",
+    "billing": "Billing",
+    "notifications": "Notifications",
+    "support": "Support",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "application": {
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "processing": "Processing",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    },
+    "create": "New Application",
+    "referenceNumber": "Reference Number",
+    "submittedAt": "Submitted",
+    "estimatedDecision": "Estimated Decision",
+    "noApplications": "No applications yet",
+    "startApplication": "Start your first visa application"
+  },
+  "payment": {
+    "pay": "Pay Now",
+    "amount": "Amount",
+    "currency": "Currency",
+    "status": {
+      "pending": "Pending",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "success": "Payment successful!",
+    "failed": "Payment failed. Please try again.",
+    "processing": "Processing payment..."
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unauthorized": "You are not authorized to view this page",
+    "serverError": "Server error. Please try again later.",
+    "networkError": "Network error. Check your connection."
+  }
+}
